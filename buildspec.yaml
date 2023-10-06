@@ -1,0 +1,73 @@
+version: 0.2
+env:
+  git-credential-helper: yes
+phases:
+  install:
+    runtime-versions:
+      nodejs: 16
+    commands:
+      # Install packages or any pre-reqs in this phase.
+
+      # Upgrading SAM CLI to latest version
+      # - pip3 install --upgrade aws-sam-cli
+      # qxHEr-7k1IaSRst6MDtE25NtX_LfaicjBAnluzMY
+      # - sam --version
+      #  Switch to Deployment Account.  (Development account for dev & sit, Production account for prd)
+      - pip3 install --upgrade aws-sam-cli
+      - pip3 install --force-reinstall "cryptography==38.0.4"
+      - sam --version
+      - TEMP_ROLE=$(aws sts assume-role --role-arn $ASSUME_ROLE_ARN --role-session-name prodplatform)
+      - export TEMP_ROLE
+      - export AWS_ACCESS_KEY_ID=$(echo "${TEMP_ROLE}" | jq -r '.Credentials.AccessKeyId')
+      - export AWS_SECRET_ACCESS_KEY=$(echo "${TEMP_ROLE}" | jq -r '.Credentials.SecretAccessKey')
+      - export AWS_SESSION_TOKEN=$(echo "${TEMP_ROLE}" | jq -r '.Credentials.SessionToken')
+      - export EXPO_TOKEN=qxHEr-7k1IaSRst6MDtE25NtX_LfaicjBAnluzMY
+      #  - export EAS_NO_VCS=1
+
+  pre_build:
+    commands:
+      - echo Installing source NPM dependencies...
+      - aws s3 cp  s3://${ExportsBucket}/${COMPONENT}/${ENV}/aws-exports.ts ./${APP_NAME}/app/config
+      - curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm@7
+      - pnpm install --no-frozen-lockfile
+      # noop
+
+  build:
+    commands:
+      - echo Build started on `date`
+      - cd $APP_NAME
+      - pwd
+      #- npx eas-cli update --branch dev --message 'Publishing updates to App' --platform all --non-interactive
+      # Need to build the App for Major version/releases
+      # - npx eas-cli build --profile preview --platform all --non-interactive
+      - npx eas-cli build --profile preview --platform all --non-interactive
+      # Need to build the App for Major version/releases
+      # - npx eas-cli build --profile preview --platform all --non-interactive
+    #   - cd ../../apps/customer-mobile
+    #   - pwd
+    #   - npx eas-cli build --profile preview --platform all --non-interactive
+    # - cd $APP_NAME
+    # - rm -rf .git
+    # - cd ../..
+    # - git init
+    # - git add .
+    # - git config user.email vamshi@1800spirits.com
+    # - git config user.name vamshi
+    # - git commit -m "Initial commit"
+    # - cd $APP_NAME
+    # - pwd
+    # - exec npx eas-cli build --profile preview --platform all --non-interactive
+    # - exit 1;
+
+  post_build:
+    commands:
+      # - bash -c "if [ \"$CODEBUILD_BUILD_SUCCEEDING\" == \"0\" ]; then exit 1; fi"
+
+artifacts:
+  files:
+    - "**/*"
+
+cache:
+  paths:
+    - "/root/.npm/**/*"
+    - "/root/.cache/yarn/**/*"

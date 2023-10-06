@@ -1,0 +1,31 @@
+{
+  "name": "spirits-mono",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "vamshi9666@riseup.net",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "yarn": "pnpm",
+    "postinstall": "yarn patch",
+    "patch": "npx patch-package",
+    "start:customer": "pnpm --filter customer-mobile start",
+    "upgrade:customer": "pnpm --filter customer-mobile npx expo-cli upgrade",
+    "upgrade:merchant": "pnpm --filter merchant-mobile expo:upgrade",
+    "start:merchant": "pnpm --filter merchant-mobile start",
+    "ios:customer": "pnpm --filter customer-mobile ios",
+    "ios:merchant": "pnpm --filter merchant-mobile ios",
+    "android:customer": "pnpm --filter customer-mobile android",
+    "android:merchant": "pnpm --filter merchant-mobile android"
+  },
+  "workspaces": {
+    "packages": [
+      "apps/*",
+      "packages/*"
+    ]
+  },
+  "devDependencies": {
+    "@tsconfig/react-native": "^2.0.2",
+    "expo-yarn-workspaces": "^2.0.4"
+  }
+}
