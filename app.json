@@ -1,0 +1,16 @@
+{
+  "expo": {
+    "name": "spirits-mono",
+    "slug": "spirits-mono",
+    "version": "1.0.0",
+    "sdkVersion": "47.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "ios": {
+      "bundleIdentifier": "com.lokanath59.spirits-mono"
+    }
+  }
+}
