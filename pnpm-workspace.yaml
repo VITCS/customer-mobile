@@ -1,0 +1,9 @@
+packages:
+  # Expo, Next.js, etc. in apps/
+  - 'apps/**'
+  # Shared Codes
+  - 'shared/**'
+  # Sources
+  - 'packages/**'
+  # packages patches
+  - '!patches/**'
