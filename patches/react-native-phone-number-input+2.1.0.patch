@@ -1,0 +1,345 @@
+diff --git a/node_modules/react-native-phone-number-input/lib/index.js b/node_modules/react-native-phone-number-input/lib/index.js
+index b89c388..4a58bcc 100644
+--- a/node_modules/react-native-phone-number-input/lib/index.js
++++ b/node_modules/react-native-phone-number-input/lib/index.js
+@@ -1,4 +1,4 @@
+-import React, { PureComponent } from "react";
++import React, { PureComponent, useCallback, useEffect, useMemo, useState } from "react";
+ import { View, Text, TouchableOpacity, Image, TextInput } from "react-native";
+ import CountryPicker, {
+   getCallingCode,
+@@ -6,15 +6,16 @@ import CountryPicker, {
+   DEFAULT_THEME,
+   CountryModalProvider,
+   Flag,
++
++
+ } from "react-native-country-picker-modal";
+ import { PhoneNumberUtil } from "google-libphonenumber";
+ import styles from "./styles";
+-
+ const dropDown =
+   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAi0lEQVRYR+3WuQ6AIBRE0eHL1T83FBqU5S1szdiY2NyTKcCAzU/Y3AcBXIALcIF0gRPAsehgugDEXnYQrUC88RIgfpuJ+MRrgFmILN4CjEYU4xJgFKIa1wB6Ec24FuBFiHELwIpQxa0ALUId9wAkhCnuBdQQ5ngP4I9wxXsBDyJ9m+8y/g9wAS7ABW4giBshQZji3AAAAABJRU5ErkJggg==";
+ const phoneUtil = PhoneNumberUtil.getInstance();
+ 
+-export default class PhoneInput extends PureComponent {
++export class PhoneInputOld extends PureComponent {
+   constructor(props) {
+     super(props);
+     this.state = {
+@@ -22,8 +23,8 @@ export default class PhoneInput extends PureComponent {
+       number: props.value
+         ? props.value
+         : props.defaultValue
+-        ? props.defaultValue
+-        : "",
++          ? props.defaultValue
++          : "",
+       modalVisible: false,
+       countryCode: props.defaultCode ? props.defaultCode : "IN",
+       disabled: props.disabled || false,
+@@ -31,13 +32,27 @@ export default class PhoneInput extends PureComponent {
+   }
+ 
+   static getDerivedStateFromProps(nextProps, prevState) {
+-    if (nextProps.disabled !== prevState.disabled) {
+-      if ((nextProps.value || nextProps.value === "") && nextProps.value !== prevState.number) {
+-        return ({ disabled: nextProps.disabled, number: nextProps.value });
++    console.log('internal.>>>.', nextProps.disabled, prevState.disabled)
++    // if (nextProps.disabled !== prevState.disabled) {
++    if (nextProps.value?.length > 0) {
++
++      const inst = phoneUtil.parse(nextProps.value)
++
++      const isValidNumber = phoneUtil.isValidNumber(inst)
++      if (isValidNumber) {
++        const code = inst && inst?.getCountryCode()
++        const number = inst && inst?.getNationalNumber()
++
++        console.log("nat", number, code);
++        if ((nextProps.value || nextProps.value === "") && nextProps.value !== prevState.number) {
++          return ({ disabled: nextProps.disabled, number, code });
++        }
++        return ({ disabled: nextProps.disabled });
++
+       }
+-      return ({ disabled: nextProps.disabled });
++      // }
++      return null;
+     }
+-    return null;
+   };
+ 
+   async componentDidMount() {
+@@ -48,25 +63,26 @@ export default class PhoneInput extends PureComponent {
+     }
+   }
+ 
+-  getCountryCode = () => {
+-    return this.state.countryCode;
+-  };
++  // getCountryCode = () => {
++  //   return this.state.countryCode;
++  // };
+ 
+-  getCallingCode = () => {
+-    return this.state.code;
+-  };
++  // getCallingCode = () => {
++  //   return this.state.code;
++  // };
+ 
+-  isValidNumber = (number) => {
+-    try {
+-      const { countryCode } = this.state;
+-      const parsedNumber = phoneUtil.parse(number, countryCode);
+-      return phoneUtil.isValidNumber(parsedNumber);
+-    } catch (err) {
+-      return false;
+-    }
+-  };
++  // isValidNumber = (number) => {
++  //   try {
++  //     const { countryCode } = this.state;
++  //     const parsedNumber = phoneUtil.parse(number, countryCode);
++  //     return phoneUtil.isValidNumber(parsedNumber);
++  //   } catch (err) {
++  //     return false;
++  //   }
++  // };
+ 
+   onSelect = (country) => {
++    console.log("country is ", country);
+     const { onChangeCountry } = this.props;
+     this.setState(
+       {
+@@ -89,7 +105,7 @@ export default class PhoneInput extends PureComponent {
+     if (onChangeCountry) {
+       onChangeCountry(country);
+     }
+-  };
++  }
+ 
+   onChangeText = (text) => {
+     this.setState({ number: text });
+@@ -130,6 +146,7 @@ export default class PhoneInput extends PureComponent {
+   renderFlagButton = (props) => {
+     const { layout = "first", flagSize } = this.props;
+     const { countryCode } = this.state;
++    console.log("country code", countryCode);
+     if (layout === "first") {
+       return (
+         <Flag
+@@ -161,6 +178,9 @@ export default class PhoneInput extends PureComponent {
+       layout = "first",
+     } = this.props;
+     const { modalVisible, code, countryCode, number, disabled } = this.state;
++
++
++    console.log("number internal is ", number);
+     return (
+       <CountryModalProvider>
+         <View
+@@ -238,6 +258,202 @@ export default class PhoneInput extends PureComponent {
+   }
+ }
+ 
++
++export default function PhoneInput(props) {
++  const {
++    value,
++    // countryCode = "US",
++    onChangeFormattedText,
++    disabled,
++
++  } = props
++
++
++  const [modalVisible, setModalVisible] = useState(false)
++  const [country, setCountry] = useState("US")
++  const [code, setCode] = useState("1")
++  const [phonenumber, setPhonenumber] = useState("")
++
++
++
++
++
++
++  // console.log("country >>>code", country,code);
++  useEffect(() => {
++    if (value?.length > 10) {
++      // try {
++      const inst = phoneUtil.parse(value)
++      const countryCode=      phoneUtil?.getRegionCodeForCountryCode(+code || "") 
++
++      // console.log("setting code to ", countryCode);
++      setCode(inst.getCountryCode().toString())
++
++       setCountry(
++        countryCode
++        || "")
++      setPhonenumber(inst.getNationalNumber().toString())
++      // } catch (error) {
++      //   log
++      // }
++    }
++  }, [value,code])
++
++  const onSelect = (c) => {
++
++    const selectedCountry = c.callingCode[0]
++
++    setCountry(c.cca2)
++
++    setCode(selectedCountry)
++
++    const newnumber = `+${selectedCountry}${phonenumber}`
++    onChangeFormattedText(
++      newnumber
++    )
++
++  }
++  const onChangeText = (text) => {
++    // this.setState({ number: text });
++    // const { onChangeText, onChangeFormattedText } = this.props;
++    setPhonenumber(text)
++    if (onChangeFormattedText) {
++      // const { code } = this.state;
++      if (code) {
++        onChangeFormattedText(text.length > 0 ? `+${code}${text}` : text);
++      } else {
++        onChangeFormattedText(text);
++      }
++    }
++
++  };
++
++
++  const renderDropdownImage = () => {
++    return (
++      <Image
++        source={{ uri: dropDown }}
++        resizeMode="contain"
++        style={styles.dropDownImage}
++      />
++    );
++  };
++
++  // const renderFlagButton = () => {
++  //   const { layout = "first", flagSize } = props;
++  //   // const { countryCode } = this.state;
++  //   console.log("country code", country);
++  //   if (layout === "first") {
++  //     return (
++  //       <Flag
++  //         countryCode={country}
++  //         flagSize={flagSize ? flagSize : DEFAULT_THEME.flagSize}
++  //       />
++  //     );
++  //   }
++  //   return <View />;
++  // };
++
++  const {
++    withShadow,
++    withDarkTheme,
++    codeTextStyle,
++    textInputProps,
++    textInputStyle,
++    autoFocus,
++    placeholder,
++    disableArrowIcon,
++    flagButtonStyle,
++    containerStyle,
++    textContainerStyle,
++    // renderDropdownImage,
++    countryPickerProps = {},
++    filterProps = {},
++    countryPickerButtonStyle,
++    layout = "first",
++  } = props;
++  // const { modalVisible, code, countryCode, number, disabled } = this.state;
++
++
++  // console.log("new number internal is ", code);
++  return (
++    <CountryModalProvider>
++      <View
++        style={[
++          styles.container,
++          withShadow ? styles.shadow : {},
++          containerStyle ? containerStyle : {},
++        ]}
++      >
++        <TouchableOpacity
++          style={[
++            styles.flagButtonView,
++            layout === "second" ? styles.flagButtonExtraWidth : {},
++            flagButtonStyle ? flagButtonStyle : {},
++            countryPickerButtonStyle ? countryPickerButtonStyle : {},
++          ]}
++          disabled={disabled}
++          onPress={() => setModalVisible(true)}
++        // onPress={() => this.setState({ modalVisible: true })}
++        >
++          <CountryPicker
++            onSelect={onSelect}
++            withEmoji
++            withFilter
++            withFlag
++            filterProps={filterProps}
++            countryCode={country}
++            
++            withCallingCode
++            disableNativeModal={disabled}
++            visible={modalVisible}
++            theme={withDarkTheme ? DARK_THEME : DEFAULT_THEME}
++            // renderFlagButton={renderFlagButton}
++            onClose={() => setModalVisible(false)}
++            {...countryPickerProps}
++          />
++          {code && layout === "second" && (
++            <Text
++              style={[styles.codeText, codeTextStyle ? codeTextStyle : {}]}
++            >{`+${code}`}</Text>
++          )}
++          {!disableArrowIcon && (
++            <React.Fragment>
++              {renderDropdownImage
++                ? renderDropdownImage
++                : renderDropdownImage()}
++            </React.Fragment>
++          )}
++        </TouchableOpacity>
++        <View
++          style={[
++            styles.textContainer,
++            textContainerStyle ? textContainerStyle : {},
++          ]}
++        >
++          {code && layout === "first" && (
++            <Text
++              style={[styles.codeText, codeTextStyle ? codeTextStyle : {}]}
++            >{`+${code}`}</Text>
++          )}
++          <TextInput
++            style={[styles.numberText, textInputStyle ? textInputStyle : {}]}
++            placeholder={placeholder ? placeholder : "Phone Number"}
++            onChangeText={onChangeText}
++            value={phonenumber}
++            editable={disabled ? false : true}
++            selectionColor="black"
++            keyboardAppearance={withDarkTheme ? "dark" : "default"}
++            keyboardType="number-pad"
++            autoFocus={autoFocus}
++            {...textInputProps}
++          />
++        </View>
++      </View>
++    </CountryModalProvider>
++  );
++}
++
+ export const isValidNumber = (number, countryCode) => {
+   try {
+     const parsedNumber = phoneUtil.parse(number, countryCode);
