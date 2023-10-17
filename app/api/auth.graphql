@@ -1,0 +1,38 @@
+# query getUser($userId: ID!) {
+#   getMerchantUser(userId: $userId) {
+#     userId
+#     firstName
+#     userRole
+#     merchantAccount {
+#       id
+#     }
+#   }
+# }
+
+# query getUserId($userId: ID!) {
+#   getMerchantUser(userId: $userId) {
+#     userId
+#     merchantAccount {
+#       id
+#     }
+#   }
+# }
+
+mutation createDeviceToken($input: CreateDeviceTokenInput!) {
+  createDeviceToken(input: $input) {
+    userId
+    deviceToken
+  }
+}
+
+# query getMerchantAccountId($userId: ID!) {
+#   getMerchantUser(userId: $userId) {
+#     merchantAccountId
+#   }
+# }
+
+# subscription onCreateOrderShipment {
+#   onCreateOrderShipment {
+#     id
+#   }
+# }
