@@ -1,0 +1,11 @@
+query searchProducts($filter: SearchableProductFilterInput, $limit: Int) {
+  searchProducts(filter: $filter, limit: $limit) {
+    items {
+      id
+      prodCategory
+      prodName
+      images
+      prodFullName
+    }
+  }
+}

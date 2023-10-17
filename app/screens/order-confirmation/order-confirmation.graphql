@@ -1,0 +1,84 @@
+query getCartShipmentForOrderingView($id: ID!) {
+  getCartShipment(id: $id) {
+    id
+    assignedStoreName
+    deliveryAddress {
+      latitude
+      longitude
+      addrLine1
+      addrLine2
+      country
+      state
+      city
+      postCode
+    }
+    subTotalProductAmount
+  }
+}
+
+query listShipments($cartId: ID!) {
+  getCart(id: $cartId) {
+    cartShipment {
+      items {
+        id
+        assignedStoreName
+        subTotalProductAmount
+        assignedStoreId
+        deliveryType
+        lineItems {
+          productId
+          prodShortDesc
+          productName
+          qtyPurchased
+          size
+          totalPrice
+          unitPrice
+          uom
+          itemInvalid
+        }
+        deliveryAddress {
+          latitude
+          longitude
+          addrLine1
+          addrLine2
+          country
+          state
+          city
+          postCode
+        }
+      }
+    }
+  }
+}
+
+# mutation calculateTax($input: [OrderShipmentInput]) {
+#   calculateTax(input: $input) {
+#     items {
+#       assignedStoreId
+#       calculatedTax
+#     }
+#   }
+# }
+
+query searchStoresForTax(
+  $filter: SearchableStoreFilterInput
+  $lat: Float!
+  $lon: Float!
+  $distance: Int!
+) {
+  searchStores(distance: $distance, lat: $lat, lon: $lon, filter: $filter) {
+    items {
+      address {
+        postCode
+        state
+      }
+    }
+  }
+}
+
+# mutation createOrder($input: CreateOrderInput!) {
+#   createOrder(input: $input) {
+#     id
+#     userId
+#   }
+# }

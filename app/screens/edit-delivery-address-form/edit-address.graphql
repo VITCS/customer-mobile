@@ -1,0 +1,35 @@
+mutation updateCustomerAddress($input: UpdateCustomerAddressInput!) {
+  updateCustomerAddress(input: $input) {
+    id
+  }
+}
+
+mutation createCustomerAddress($input: CreateCustomerAddressInput!) {
+  createCustomerAddress(input: $input) {
+    id
+  }
+}
+
+query getCustomerAddress($id: ID!) {
+  getCustomerAddress(id: $id) {
+    id
+    latitude
+    longitude
+    addrLine1
+    addrLine2
+    postCode
+    addrState
+    phoneNumber
+    firstName
+    customType
+    addressType
+    markDefault
+    latitude
+    longitude
+    city
+    country
+    instructions
+    lastName
+    middleName
+  }
+}

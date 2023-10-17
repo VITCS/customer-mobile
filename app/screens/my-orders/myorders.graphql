@@ -1,0 +1,84 @@
+ query listOrdersByUserId(
+    $userId: String!
+    $filter: ModelOrderFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listOrdersByUserId(
+      userId: $userId
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      nextToken
+      items {
+        orderStatus
+        orderShipment {
+          items {
+            actionType
+            assignedStoreId
+            deliveryType
+            shipmentStatus
+            assignedStoreName
+            createdAt
+            rejectionMsg
+            isUpdated
+            deliveryAddress {
+              addrLine1
+              addrLine2
+              city
+              country
+              latitude
+              longitude
+              postCode
+              state
+            }
+            id
+            orderId
+            orderLineItems {
+              id
+              prodShortDesc
+              productId
+              productName
+              qtyPurchased
+              size
+              totalPrice
+              unitPrice
+              uom
+            }
+            statusHistory {
+              fromStatus
+              toStatus
+              updatedBy
+              updatedAt
+            }
+            subTotalAmount
+            subTotalDeliveryCharges
+            subTotalDiscount
+            subTotalProductAmount
+            subTotalTax
+            subTotalTipAmount
+            updatedAt
+            updatedBy
+            userId
+          }
+          nextToken
+        }
+        cartId
+        channel
+        #closedAt
+        createdAt
+        id
+        totalAmount
+        totalDeliveryCharges
+        totalDiscount
+        totalProductAmount
+        totalTaxAmount
+        totalTipAmount
+        transactionId
+        updatedAt
+        userAgent
+        userId
+      }
+    }
+  }

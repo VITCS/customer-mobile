@@ -1,0 +1,17 @@
+query getPrefilledValues($userId: ID!) {
+  getCustomerProfile(userId: $userId) {
+    id
+    lastName
+    firstName
+    middleName
+    profileImage
+    phoneNumber
+    email
+  }
+}
+
+mutation editUserProfile($input: UpdateCustomerProfileInput!) {
+  updateCustomerProfile(input: $input) {
+    id
+  }
+}

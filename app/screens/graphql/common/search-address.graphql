@@ -1,0 +1,12 @@
+query searchAddress($input: SearchAddressInput!) {
+  searchAddress(input: $input) {
+    items {
+      city
+      secondary
+      entries
+      state
+      street_line
+      zipcode
+    }
+  }
+}

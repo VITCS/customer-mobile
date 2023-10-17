@@ -1,0 +1,64 @@
+query getDeliveryContacts($userId: ID!) {
+  getCustomerProfile(userId: $userId) {
+    customerContact {
+      items {
+        id
+        firstName
+        lastName
+        middleName
+        phoneNumber
+        contactCustomType
+        contactCategory
+        email
+        occasions {
+          items {
+            id
+            reminder
+            occasionDate
+            occasionTitle
+          }
+        }
+        deliveryAddress {
+          items {
+            id
+            firstName
+            middleName
+            lastName
+            addrLine1
+            addrLine2
+            addrState
+            country
+            addressType
+            markDefault
+            instructions
+          }
+        }
+      }
+    }
+  }
+}
+
+query getDeliveryContactNames($userId: ID!) {
+  getCustomerProfile(userId: $userId) {
+    customerContact {
+      items {
+        id
+        firstName
+        lastName
+        middleName
+      }
+    }
+  }
+}
+
+mutation udpateCustomerContact($input: UpdateCustomerContactInput!) {
+  updateCustomerContact(input: $input) {
+    id
+  }
+}
+
+mutation createOccasion($input: CreateCustomerOccasionInput!) {
+  createCustomerOccasion(input: $input) {
+    id
+  }
+}

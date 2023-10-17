@@ -1,0 +1,18 @@
+query getOrderShipment($id: ID!) {
+  getOrderShipment(id: $id) {
+    id
+    orderLineItems {
+      productName
+      productId
+      unitPrice
+      qtyPurchased
+    }
+  }
+}
+
+mutation updateOrderShipment($input: UpdateOrderShipmentInput!) {
+  updateOrderShipment(input: $input) {
+    id
+    shipmentStatus
+  }
+}

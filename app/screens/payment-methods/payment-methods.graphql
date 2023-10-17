@@ -1,0 +1,12 @@
+mutation getPaymentMethodList($input: PaymentMethodsListInput!) {
+  paymentMethodsList(input: $input) {
+    paymentMethods
+    defaultPaymentMethodId
+  }
+}
+
+mutation getDefaultPayment($input: PaymentMethodsListInput!) {
+  paymentMethodsList(input: $input) {
+    defaultPaymentMethodId
+  }
+}

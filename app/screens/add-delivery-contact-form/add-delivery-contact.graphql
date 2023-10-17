@@ -1,0 +1,13 @@
+mutation createCustomerContactWithRelations($input: CreateCustomerContactAddressOccasionInput!) {
+  createCustomerContactAddressOccasion(input: $input) {
+    customerContact {
+      id
+    }
+  }
+}
+
+mutation updateCustomerContact($input: UpdateCustomerContactInput!) {
+    updateCustomerContact(input: $input) {
+      id
+    }
+  }

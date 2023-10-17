@@ -1,0 +1,20 @@
+query getCustomerOccasion($id: ID!) {
+  getCustomerOccasion(id: $id) {
+    id
+    occasionDate
+    occasionTitle
+    reminder
+  }
+}
+
+mutation editCustomerOccasion($input: UpdateCustomerOccasionInput!) {
+  updateCustomerOccasion(input: $input) {
+    id
+  }
+}
+
+# mutation createCustomerOccasion($input: CreateCustomerOccasionInput!) {
+#   createCustomerOccasion(input: $input) {
+#     id
+#   }
+# }
