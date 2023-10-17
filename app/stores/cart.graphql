@@ -1,0 +1,287 @@
+fragment cartShipmentParts on CartShipment {
+  id
+  assignedStoreId
+  assignedStoreName
+  deliveryType
+  deliveryAddress {
+    latitude
+    longitude
+    addrLine1
+    addrLine2
+    country
+    state
+    city
+    postCode
+  }
+  lineItems {
+    productId
+    productName
+    qtyPurchased
+    unitPrice
+    totalPrice
+    itemInvalid
+  }
+  subTotalDiscount
+  subTotalProductAmount
+  serviceCharge
+  subTotalTax
+}
+
+fragment cartParts on Cart {
+  id
+  cartShipment {
+    items {
+      ...cartShipmentParts
+    }
+  }
+}
+
+query getCart($id: ID!) {
+  getCart(id: $id) {
+    ...cartParts
+  }
+}
+query listCarts($limit: Int, $filter: ModelCartFilterInput) {
+  listCarts(limit: $limit, filter: $filter) {
+    items {
+      ...cartParts
+    }
+  }
+}
+query getCartByUserId($userId: String!) {
+  getCartByUserId(userId: $userId) {
+    items {
+      id
+      cartShipment {
+        items {
+          cartId
+        }
+      }
+    }
+  }
+}
+query getCartIds($limit: Int, $filter: ModelCartFilterInput) {
+  listCarts(limit: $limit, filter: $filter) {
+    items {
+      id
+    }
+  }
+}
+
+fragment deliveryAddressParts on CustomerAddress {
+  id
+  addrLine1
+  addrLine2
+  addrState
+  country
+  city
+  customType
+  markDefault
+  firstName
+  addressType
+  latitude
+  longitude
+  postCode
+}
+
+query getDeliveryAddressInit($userId: ID!) {
+  getCustomerProfile(userId: $userId) {
+    deliveryToAddress {
+      ...deliveryAddressParts
+    }
+    customerContact {
+      items {
+        deliveryAddress {
+          items {
+            latitude
+            longitude
+          }
+        }
+      }
+    }
+  }
+}
+
+query getDeliveryAddress($userId: ID!) {
+  getCustomerProfile(userId: $userId) {
+    deliveryToAddress {
+      ...deliveryAddressParts
+      id
+      firstName
+      middleName
+      lastName
+      addrLine1
+      addrLine2
+      customerContact {
+        id
+        firstName
+        middleName
+        lastName
+      }
+    }
+  }
+}
+
+query CustomerContactsByCustomerProfileId($userID: ID, $filter: ModelCustomerContactFilterInput) {
+  CustomerContactsByCustomerProfileId(filter: $filter, userId: $userID) {
+    items {
+      id
+      contactCategory
+      contactCustomType
+      defaultAddressId
+      email
+      firstName
+      id
+      phoneNumber
+      deliveryAddress {
+        items {
+          ...deliveryAddressParts
+        }
+      }
+    }
+  }
+}
+
+query cartProducts($id: ID!) {
+  getCart(id: $id) {
+    id
+    totalAmount
+
+    cartShipment {
+      items {
+        id
+        assignedStoreId
+        lineItems {
+          id
+          productId
+          qtyPurchased
+          productName
+          unitPrice
+          totalPrice
+          itemInvalid
+        }
+      }
+    }
+  }
+}
+
+mutation updateCartShipment($input: UpdateCartShipmentInput!) {
+  updateCartShipment(input: $input) {
+    ...cartShipmentParts
+  }
+}
+
+mutation createCartShipment($input: CreateCartShipmentInput!) {
+  createCartShipment(input: $input) {
+    ...cartShipmentParts
+  }
+}
+
+mutation createCart($input: CreateCartInput!) {
+  createCart(input: $input) {
+    ...cartParts
+  }
+}
+
+mutation updateCart($input: UpdateCartInput!) {
+  updateCart(input: $input) {
+    ...cartParts
+  }
+}
+
+query getShipments($id: ID!) {
+  getCart(id: $id) {
+    id
+    cartShipment {
+      items {
+        ...cartShipmentParts
+      }
+    }
+  }
+}
+
+mutation deleteCart($input: DeleteCartInput!) {
+  deleteCart(input: $input) {
+    ...cartParts
+  }
+}
+
+fragment orderParts on Order {
+  id
+  orderStatus
+  userId
+  totalAmount
+
+  orderShipment {
+    items {
+      id
+      deliveryType
+      assignedStoreId
+      orderId
+      deliveryType
+      assignedStoreName
+      scheduledDeliveryDt
+      scheduledTimeSlot
+      updatedAt
+      updatedBy
+      subTotalAmount
+      subTotalDeliveryCharges
+      subTotalDiscount
+      subTotalProductAmount
+      subTotalTax
+      subTotalTipAmount
+      createdAt
+      deliveryAddress {
+        latitude
+        longitude
+        addrLine1
+        addrLine2
+        city
+        state
+        country
+        postCode
+      }
+      orderLineItems {
+        id
+        productId
+        productName
+        prodShortDesc
+        prodCategory
+        size
+        uom
+        qtyPurchased
+        unitPrice
+        totalPrice
+      }
+    }
+  }
+}
+
+query listOrders($limit: Int, $filter: ModelOrderFilterInput) {
+  listOrders(limit: $limit, filter: $filter) {
+    items {
+      ...orderParts
+    }
+  }
+}
+
+mutation createOrder($input: CreateOrderInput!) {
+  createOrder(input: $input) {
+    ...orderParts
+  }
+}
+
+mutation deleteCartShipment($input: DeleteCartShipmentInput!) {
+  deleteCartShipment(input: $input) {
+    ...cartShipmentParts
+  }
+}
+
+mutation calculateTax($input: [OrderShipmentInput]) {
+  calculateTax(input: $input) {
+    items {
+      calculatedTax
+      assignedStoreId
+    }
+  }
+}

@@ -1,0 +1,65 @@
+query getProfileID($userId: ID!) {
+  getCustomerProfile(userId: $userId) {
+    id
+    userId
+    deliveryToId
+  }
+}
+
+query getProfile($userId: ID!) {
+  getCustomerProfile(userId: $userId) {
+    id
+    phoneNumber
+    firstName
+    lastName
+    middleName
+    email
+    userId
+    profileImage
+    deliveryToId
+    subscribeToNotification
+    orderLineitemReplacement
+  }
+}
+
+query getImageURL($type: String!, $fileName: String!, $userId: String!, $requestType: String!) {
+  getS3SignedURL(
+    contentType: $type
+    fileName: $fileName
+    userId: $userId
+    requestType: $requestType
+  ) {
+    signedURL
+    fileName
+  }
+}
+
+# query getCustomerDeliveryId($userID: ID!) {
+#   getCustomerProfile(userId: $userID) {
+#     deliveryToAddress {
+#       id
+#       firstName
+#       lastName
+#     }
+#   }
+# }
+query listAllOrders {
+  listOrders {
+    items {
+      ...orderParts
+    }
+  }
+}
+
+mutation createDeviceToken($input: CreateDeviceTokenInput!) {
+  createDeviceToken(input: $input) {
+    userId
+    deviceToken
+  }
+}
+
+query getStripeCustomerId($userId: ID!) {
+  getCustomerProfile(userId: $userId) {
+    customerId
+  }
+}

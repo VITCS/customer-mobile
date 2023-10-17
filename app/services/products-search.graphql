@@ -1,0 +1,73 @@
+query searchProductsLambda(
+  $filter: SearchableProductFilterInput
+  $sort:SearchableProductSortInput
+  $limit: Int
+  $nextToken: String
+  $distance: Int
+  $from: Int
+  $lat: Float
+  $lon: Float
+  $maxPrice: Float
+  $minPrice: Float
+) {
+  searchProductsLambda(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    distance: $distance
+    from: $from
+    lat: $lat
+    lon: $lon
+    maxPrice: $maxPrice
+    minPrice: $minPrice
+    sort:$sort
+  ) {
+    items {
+      id
+      prodFullName
+      prodName
+      prodCategory
+      imageFile
+      brandLine
+      manufacturer
+      prodMinor
+      region
+      abv
+      price
+    }
+    nextToken
+    brand {
+      key
+      doc_count
+    }
+    ProdCategory {
+      key
+      doc_count
+    }
+    manufacturer {
+      key
+      doc_count
+    }
+    prodMajor {
+      key
+      doc_count
+    }
+    prodMinor {
+      key
+      doc_count
+    }
+    majorType {
+      key
+      doc_count
+    }
+    country {
+      key
+      doc_count
+    }
+    container {
+      key
+      doc_count
+    }
+    total
+  }
+}
