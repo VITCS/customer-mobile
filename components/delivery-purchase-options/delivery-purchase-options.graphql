@@ -1,0 +1,40 @@
+query searchPriceAndAvailabilitys(
+  $filter: SearchablePriceAndAvailabilityFilterInput
+  $lat: Float!
+  $lon: Float!
+  $distance: Int!
+) {
+  searchPriceAndAvailabilitys(filter: $filter, lat: $lat, lon: $lon, distance: $distance) {
+    items {
+      id
+      storeId
+      price
+    }
+  }
+}
+
+query searchStores(
+  $filter: SearchableStoreFilterInput
+  $lat: Float!
+  $lon: Float!
+  $distance: Int!
+) {
+  searchStores(filter: $filter, lat: $lat, lon: $lon, distance: $distance) {
+    items {
+      id
+      storeName
+      address {
+        addrLine1
+        addrLine2
+        city
+        latitude
+        longitude
+        postCode
+        state
+      }
+      deliveryScope {
+        deliveryType
+      }
+    }
+  }
+}

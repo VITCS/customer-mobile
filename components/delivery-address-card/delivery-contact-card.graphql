@@ -1,0 +1,22 @@
+mutation updateUser($input: UpdateCustomerProfileInput!) {
+  updateCustomerProfile(input: $input) {
+    userId
+    deliveryToId
+    subscribeToNotification
+    orderLineitemReplacement
+  }
+}
+
+query getCustomerProfile($userId: ID!) {
+  getCustomerProfile(userId: $userId) {
+    id
+    phoneNumber
+    firstName
+    lastName
+    middleName
+    email
+    userId
+    profileImage
+    deliveryToId
+  }
+}

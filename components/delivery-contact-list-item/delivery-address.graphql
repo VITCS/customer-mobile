@@ -1,0 +1,15 @@
+mutation deleteCustomerAddress($input: DeleteCustomerAddressInput!) {
+  deleteCustomerAddress(input: $input) {
+    id
+  }
+}
+mutation deleteCustomerOccasion($input: DeleteCustomerOccasionInput!) {
+  deleteCustomerOccasion(input: $input) {
+    id
+  }
+}
+  mutation deleteCustomerContact($input: DeleteCustomerContactInput!) {
+    deleteCustomerContact(input: $input) {
+      id
+    }
+  }
